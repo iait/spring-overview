@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean name="speakerRepository" class="com.example.repository.HibernateSpeakerRepositoryImpl" />
+
+    <bean name="setterSpeakerService" class="com.example.service.SpeakerServiceImpl" >
+        <property name="speakerRepository" ref="speakerRepository" />
+    </bean>
+
+    <bean name="constructorSpeakerService" class="com.example.service.SpeakerServiceImpl" >
+        <constructor-arg index="0" ref="speakerRepository" />
+    </bean>
+
+    <bean name="autowiredSpeakerService" class="com.example.service.SpeakerServiceImpl" autowire="constructor" />
+
+</beans>
