@@ -188,3 +188,5 @@ VM options:
 ```
 -Dspring.profiles.active=dev
 ```
+
+### Next: [Spring MVC](spring-mvc.md)
