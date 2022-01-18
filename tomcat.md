@@ -34,16 +34,38 @@ Users
 
 The tomcat users are defined in */conf/tomcat-users.xml*.
 
-Deploy Spring App
------------------
+Dual JAR/WAR deploy
+-------------------
 
-1. In your `pom.xml` change the packaging of the project to war.
+1. Use a property to define the packaging type.
 
 ```xml
-<packaging>war</packaging>
+<packaging>${project.packaging}</packaging>
 ```
 
-2. Mark the `spring-boot-starter-tomcat` dependency as `provided` since all the Tomcat dependency libraries will be provided to the application by the servlet containter.
+2. Use JAR packaging as the default.
+
+```xml
+<properties>
+    <project.packaging>jar</project.packaging>
+    ...
+</properties>
+```
+
+3. Define a profile with the WAR packaging type.
+
+```xml
+<profiles>
+    <profile>
+        <id>release</id>
+        <properties>
+            <project.packaging>war</project.packaging>
+        </properties>
+    </profile>
+</profiles>
+```
+
+4. Mark the `spring-boot-starter-tomcat` dependency as `provided` since all the Tomcat dependency libraries will be provided to the application by the servlet containter when deploying the WAR.
 You probably expect these libraries aren’t packed inside the WAR, but the reality is different.
 All the provided dependencies are included into the WAR file (so it can be run with `java -jar`), but they are placed in a location where Tomcat's classloader does not look: `/WEB-INF/lib-provided`.
 
@@ -72,35 +94,17 @@ public class App extends SpringBootServletInitializer {
 
 }
 ```
-4. Execute:
+4. Package the application WAR using the `release` profile to deploy on the server:
 ```
-$ mvn clean package
+$ mvn clean package -Prelease
 ```
 
 5. Copy the WAR file generated in target into the server webapps folder.
 
-Dual JAR/WAR deploy
--------------------
+Shrinking the WAR
+-----------------
 
-Set the packaging with a property placeholder that you will declare in your profiles.
-```xml
-<packaging>${project.packaging}</packaging>
-```
-
-Create the default dev profile with JAR packaging.
-```xml
-<profile>
-    <id>dev</id>
-    <activation>
-        <activeByDefault>true</activeByDefault>
-    </activation>
-    <properties>
-        <project.packaging>jar</project.packaging>
-    </properties>
-</profile>
-```
-
-Create the release profile with the WAR packaging.
+If you don't want the unnecessary libraries to be in the WAR file under the `provided` folder, create the release profile like so:
 ```xml
 <profile>
     <id>release</id>
@@ -128,11 +132,7 @@ Create the release profile with the WAR packaging.
 </profile>
 ```
 
-
-
-
 -----------
-
 
 Note:
 

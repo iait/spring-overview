@@ -41,5 +41,17 @@ Putting the jsp pages underneath `webapp/WEB-INF/jsp/` folder makes it so that t
 They are not automatically exposed to the browser.
 We control the state of how they flow through the application.
 
+In the controller methods we return a string and that is what's used by the ViewResolver to find the JSP page named and in the location specified with our resolver.
+
+Thymeleaf
+---------
+
+Bean Validation
+---------------
+
+JSR 303 1.0 specification
+JSR 349 1.0
+java JSR 380 - 2.0 bean validation spec
+
 
 
