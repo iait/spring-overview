@@ -79,3 +79,20 @@ $ docker container exec -ti spring-boot-docker /bin/sh
 ```
 
 Improvements in [Spring Boot with Docker and Kubernetes Video](https://www.youtube.com/watch?v=Pyd9Wc5Gnd0).
+
+We can create a Dockerfile with multiple stages to, not only deploy or run the application, but also to build the application as shown in the next example.
+
+```Dockerfile
+FROM maven:3-eclipse-temurin-11-alpine AS builder
+WORKDIR /usr/src/app
+COPY pom.xml .
+RUN mvn -B dependency:go-offline
+COPY . .
+RUN mvn package
+
+FROM eclipse-temurin:11-alpine
+WORKDIR /app
+COPY --from=builder /usr/src/app/target/10-docker-0.0.1-SNAPSHOT.jar .
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app/10-docker-0.0.1-SNAPSHOT.jar"]
+```

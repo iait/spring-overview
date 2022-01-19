@@ -1,3 +1,4 @@
+# Create spring user and run JAR with it 
 FROM eclipse-temurin:11-alpine
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring

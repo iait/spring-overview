@@ -1,8 +1,13 @@
+# Build, package and run the application in stages
+FROM maven:3-eclipse-temurin-11-alpine AS builder
+WORKDIR /usr/src/app
+COPY pom.xml .
+RUN mvn -B dependency:go-offline
+COPY . .
+RUN mvn package
+
 FROM eclipse-temurin:11-alpine
-RUN addgroup -S spring && adduser -S spring -G spring
-USER spring:spring
-ARG DEPENDENCY=target/dependency
-COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY ${DEPENDENCY}/META-INF /app/META-INF
-COPY ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-cp","app:app/lib/*","com.example.App"]
+WORKDIR /app
+COPY --from=builder /usr/src/app/target/10-docker-0.0.1-SNAPSHOT.jar .
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app/10-docker-0.0.1-SNAPSHOT.jar"]
